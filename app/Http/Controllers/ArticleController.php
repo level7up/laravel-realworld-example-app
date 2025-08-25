@@ -2,28 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Article\DestroyRequest;
+use App\Models\User;
+use App\Models\Article;
+use Illuminate\Http\Request;
+use App\Services\ArticleService;
+use App\Http\Resources\ArticleResource;
+use App\Http\Resources\ArticleCollection;
 use App\Http\Requests\Article\FeedRequest;
 use App\Http\Requests\Article\IndexRequest;
 use App\Http\Requests\Article\StoreRequest;
 use App\Http\Requests\Article\UpdateRequest;
-use App\Http\Resources\ArticleCollection;
-use App\Http\Resources\ArticleResource;
-use App\Models\Article;
-use App\Models\User;
-use App\Services\ArticleService;
+use App\Http\Requests\Article\DestroyRequest;
 
 class ArticleController extends Controller
 {
     protected Article $article;
     protected ArticleService $articleService;
     protected User $user;
+    protected Request $request;
 
-    public function __construct(Article $article, ArticleService $articleService, User $user)
+    public function __construct(Article $article, ArticleService $articleService, User $user, Request $request)
     {
         $this->article = $article;
         $this->articleService = $articleService;
         $this->user = $user;
+        $this->request = $request;
     }
 
     public function index(IndexRequest $request): ArticleCollection
@@ -44,7 +47,7 @@ class ArticleController extends Controller
     public function store(StoreRequest $request): ArticleResource
     {
         $article = auth()->user()->articles()->create($request->validated()['article']);
-
+        $this->request = $request;
         $this->syncTags($article);
 
         return $this->articleResponse($article);
@@ -53,9 +56,8 @@ class ArticleController extends Controller
     public function update(Article $article, UpdateRequest $request): ArticleResource
     {
         $article->update($request->validated()['article']);
-
+        $this->request = $request;
         $this->syncTags($article);
-
         return $this->articleResponse($article);
     }
 
@@ -77,7 +79,7 @@ class ArticleController extends Controller
 
         return $this->articleResponse($article);
     }
-    
+
     protected function syncTags(Article $article): void
     {
         $this->articleService->syncTags($article, $this->request->validated()['article']['tagList'] ?? []);

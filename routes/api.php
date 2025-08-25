@@ -1,11 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TagController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\TagController;
+use App\Http\Controllers\ArticleRevisionController;
 
 Route::get('profiles/{user}', [ProfileController::class, 'show']);
 Route::get('tags', [TagController::class, 'index']);
@@ -39,6 +40,10 @@ Route::middleware('auth')->group(function () {
         Route::delete('{article}', [ArticleController::class, 'destroy']);
         Route::post('{article}/favorite', [ArticleController::class, 'favorite']);
         Route::delete('{article}/favorite', [ArticleController::class, 'unfavorite']);
+
+        Route::get('{article}/revisions',  [ArticleRevisionController::class, 'revisions']);
+        Route::get('{article}/revisions/{articleRevision}',  [ArticleRevisionController::class, 'revision']);
+        Route::post('{article}/revisions/{articleRevision}/revert', [ArticleRevisionController::class, 'revert'])->name('articles.revisions.revert');
     });
 
     Route::prefix('articles')->group(function () {
