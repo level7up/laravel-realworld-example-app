@@ -12,6 +12,7 @@ class ArticleRevisionResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'revision_number' => $this->revision_number,
             'slug' => $this->slug,
             'title' => $this->title,
             'description' => $this->description,

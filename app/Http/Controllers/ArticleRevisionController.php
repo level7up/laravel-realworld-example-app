@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Article;
 use App\Models\ArticleRevision;
 use Illuminate\Support\Facades\DB;
+use App\Http\Resources\ArticleResource;
 use App\Http\Resources\ArticleRevisionResource;
 use App\Http\Resources\ArticleRevisionCollection;
 
@@ -39,5 +40,9 @@ class ArticleRevisionController extends Controller
         });
 
         return $this->articleResponse($article);
+    }
+    protected function articleResponse(Article $article): ArticleResource
+    {
+        return new ArticleResource($article->load('user', 'users', 'tags', 'user.followers'));
     }
 }

@@ -20,6 +20,7 @@ class ArticleResource extends JsonResource
             'updatedAt' => $this->updated_at,
             'favoritesCount' => (int) $this->users_count,
             'favorited' => $this->users->contains(auth()->id()),
+            'revisions'=> new ArticleRevisionCollection($this->revisions),
             'author' => [
                 'username' => $this->user->username,
                 'bio' => $this->user->bio,
