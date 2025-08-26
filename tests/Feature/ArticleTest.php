@@ -26,6 +26,10 @@ class ArticleTest extends TestCase
                     'updatedAt' => $article->updated_at,
                     'favorited' => false,
                     'favoritesCount' => 0,
+                    'revisions' => [
+                        'revisions' => [],
+                        'revisionsCount' => 0,
+                    ],
                     'author' => [
                         'username' => $article->user->username,
                         'bio' => $article->user->bio,
